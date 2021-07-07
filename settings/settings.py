@@ -81,8 +81,12 @@ WSGI_APPLICATION = 'aurora.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': params.get('db', 'name'),
+        'USER': params.get('db', 'user'),
+        'PASSWORD': params.get('db', 'password'),
+        'HOST': params.get('db', 'host'),
+        'PORT': params.get('db', 'port'),
     }
 }
 
