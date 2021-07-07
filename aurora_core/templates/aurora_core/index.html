@@ -1,0 +1,44 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="container h-100 d-flex justify-content-center">
+    <div class="month d-flex  flex-column justify-content-center">
+        <div class="d-flex">
+            <h4 id="Prev-Month" class="w-100 text-center"><</h4>
+            <h4 id="Month"></h4>
+            <h4 id="Next-Month" class="w-100 text-center">></h4>
+        </div>
+        <table class="table days">
+            <thead>
+            <tr>
+                <th class="text-center" scope="col">Пн</th>
+                <th class="text-center" scope="col">Вт</th>
+                <th class="text-center" scope="col">Ср</th>
+                <th class="text-center" scope="col">Чт</th>
+                <th class="text-center" scope="col">Пт</th>
+                <th class="text-center" scope="col">Сб</th>
+                <th class="text-center" scope="col">Вс</th>
+            </tr>
+            </thead>
+            <tbody id='Calendar'>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% load static %}
+<script src="{% static 'aurora_core/js/schedule.js' %}"></script>
+{% else %}
+<div class="container mt-4">
+    <h1 class="cover-heading">Aurora helps work more productivity.</h1>
+    <p class="lead">Provides the transparency and control of individual responsibility necessary for effective
+        teamwork, and allows people to organize and track tasks.</p>
+    <br>
+    <div class="d-grid mx-auto col-8">
+        <a class="btn btn-success" href="{% url 'user_manager:sign_up' %}">Let's go!</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+

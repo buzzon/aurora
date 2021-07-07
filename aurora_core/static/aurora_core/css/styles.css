@@ -1,0 +1,38 @@
+html,body {
+  height: 100%;
+}
+
+.month {
+    min-width: 60%;
+}
+
+.selected_day{
+  background: linear-gradient(orange, red);
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  text-align: center;
+  display: flex;
+  height: 22px;
+  width: 22px;
+  color: #fff;
+  margin: auto;
+}
+
+.link-underline-hover {
+    text-decoration: none;
+}
+
+.link-underline-hover:hover {
+    text-decoration: underline;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}

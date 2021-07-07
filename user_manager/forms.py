@@ -3,15 +3,13 @@ from django import forms
 
 
 class SignUpForm(forms.ModelForm):
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(
-        attrs={'class': 'form-control form-control-sm'}))
-
     class Meta:
         model = User
-        fields = ('username', 'email')
+        fields = ('username', 'email', 'password')
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'email': forms.EmailInput(attrs={'class': 'form-control form-control-sm'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control form-control-sm'}),
         }
 
 

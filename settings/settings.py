@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'aurora_core.apps.AuroraCoreConfig',
     'schedule.apps.ScheduleConfig',
     'user_manager.apps.UserManagerConfig',
     'django.contrib.admin',
