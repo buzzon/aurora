@@ -18,6 +18,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('', include('aurora_core.urls')),
+    path('schedule/api/', include('schedule.api.urls')),
     path('accounts/', include('user_manager.urls')),
     path('admin/', admin.site.urls),
 ]

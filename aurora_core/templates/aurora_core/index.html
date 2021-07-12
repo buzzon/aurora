@@ -27,16 +27,40 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% load static %}
+<script src="{% static 'aurora_core/js/jquery-3.6.0.min.js' %}"></script>
+<script>
+    let event_list_url = "{% url 'schedule_api:event_list' %}";
+</script>
 <script src="{% static 'aurora_core/js/schedule.js' %}"></script>
 {% else %}
 <div class="container mt-4">
-    <h1 class="cover-heading">Aurora helps work more productivity.</h1>
-    <p class="lead">Provides the transparency and control of individual responsibility necessary for effective
-        teamwork, and allows people to organize and track tasks.</p>
+    <h1 class="cover-heading">Aurora - это интерактивный календарь.</h1>
+    <p class="lead">Обеспечивает прозрачность и контроль индивидуальной ответственности,
+        необходимые для эффективной командной работы,
+        и позволяет людям организовывать и отслеживать события.</p>
     <br>
     <div class="d-grid mx-auto col-8">
-        <a class="btn btn-success" href="{% url 'user_manager:sign_up' %}">Let's go!</a>
+        <a class="btn btn-success" href="{% url 'user_manager:sign_in'%}">Войти</a><br>
+        <a class="btn btn-primary" href="{% url 'user_manager:sign_up' %}">Зарегистрироваться</a>
     </div>
 </div>
 {% endif %}

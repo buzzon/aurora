@@ -1,4 +1,5 @@
-var year, month;
+var year, month,
+    modal = new bootstrap.Modal(document.getElementById('Modal'));
 
 window.onload = function() {
     var date = new Date();
@@ -7,9 +8,7 @@ window.onload = function() {
     loadcalendar(year, month);
 
     var prev = document.getElementById('Prev-Month');
-    prev.onclick = function() {
-        console.log(month);
-        month = month == 0 ? month + 10 : month - 1; loadcalendar(year, month) };
+    prev.onclick = function() { month = month == 0 ? month + 10 : month - 1; loadcalendar(year, month) };
     var next = document.getElementById('Next-Month');
     next.onclick = function() { month++; month %= 11; loadcalendar(year, month) };
 }
@@ -29,9 +28,23 @@ function loadcalendar(y, m) {
         'Декабрь',
      ];
 
+    var monthsP=[
+       'января',
+       'февраля',
+       'марта',
+       'апреля',
+       'мая',
+       'июня',
+       'июля',
+       'августа',
+       'сентября',
+       'ноября',
+       'декабря',
+    ];
+
     var firstDay = new Date(y, m, 1);
     var lastDay = new Date(y, m + 1, 0);
-    document.getElementById('Month').textContent = months[m];
+    $('#Month').text(months[m]);
 
     calendar = document.getElementById('Calendar');
     calendar.innerHTML = '';
@@ -44,9 +57,25 @@ function loadcalendar(y, m) {
     var days = document.getElementsByClassName('day');
     for (let i = 0; i < days.length; i++) {
         days[i].onclick = function() {
-            this.classList.toggle("selected_day");
+//            this.classList.toggle("selected_day");
+            modal.show();
+            $('#ModalLabel').text(i + 1 + " " + monthsP[m] + " " + y);
         }
     }
+
+    loadData(m + 1);
+}
+
+function loadData(month){
+    $.ajax({
+        url: event_list_url,
+        type: "get",
+        context: document.body,
+        data: {month:  month},
+        success: function(data){
+            console.log(data);
+        }
+    });
 }
 
 function addfirstweek(calendar, firstDay) {

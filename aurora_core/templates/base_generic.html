@@ -27,9 +27,6 @@
                 {% if user.is_staff %}
                     <a class="nav-link link-dark link-underline-hover" href="{% url 'admin:index' %}">Admin</a>
                 {% endif %}
-                {% else %}
-                    <a class="nav-link link-success link-underline-hover" href="{% url 'user_manager:sign_in'%}">Sign in</a>
-                    <a class="nav-link link-primary link-underline-hover" href="{% url 'user_manager:sign_up' %}">Sign up</a>
                 {% endif %}
             </div>
         </div>
