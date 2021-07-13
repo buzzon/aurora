@@ -57,14 +57,27 @@ function loadcalendar(y, m) {
     var days = document.getElementsByClassName('day');
     for (let i = 0; i < days.length; i++) {
         days[i].onclick = function() {
-//            this.classList.toggle("selected_day");
             modal.show();
             $('#ModalLabel').text(i + 1 + " " + monthsP[m] + " " + y);
+            var $day = $('*[data-index="'+ (i + 1) + '"]');
+            $('#Modal').find('#id_description').html($day.data().description);
         }
     }
 
     loadData(m + 1);
 }
+
+//function loadEventForm(){
+//    $.ajax({
+//        url: event_create_form_url,
+//        type: "get",
+//        success: function(data){
+//            $('#Modal').find('.modal-body').html(data);
+//            $('#modalForm').attr('action', event_create_form_url);
+//        }
+//    });
+//}
+
 
 function loadData(month){
     $.ajax({
@@ -73,7 +86,13 @@ function loadData(month){
         context: document.body,
         data: {month:  month},
         success: function(data){
-            console.log(data);
+            data.forEach(function(element){
+                var date = new Date(element.date).getDate();
+                var $day = $('*[data-index="'+ date + '"]');
+                $day.addClass("selected_day");
+                $day.data( "description", element.description );
+                $day.data( "label", element.label );
+            });
         }
     });
 }
@@ -93,6 +112,7 @@ function addfirstweek(calendar, firstDay) {
         td.classList.add("text-center");
         day = document.createElement("day");
         day.textContent = index;
+        day.dataset.index = index;
         day.classList.add("day");
         td.appendChild(day);
         week.appendChild(td);
@@ -110,6 +130,7 @@ function addweek(calendar, firstDay, lastDay) {
             td.classList.add("text-center");
             day = document.createElement("day");
             day.textContent = index;
+            day.dataset.index = index;
             day.classList.add("day");
             td.appendChild(day);
             week.appendChild(td);

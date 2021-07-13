@@ -40,3 +40,5 @@ class LabelList(generics.ListCreateAPIView):
 class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Label.objects.all()
     serializer_class = LabelSerializer
+
+
