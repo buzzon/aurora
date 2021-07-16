@@ -1,31 +1,44 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+
+{% load static %}
+<!--<link rel="stylesheet" type="text/css" href="{% static 'aurora_core/css/styles.css' %}">-->
+
 {% if user.is_authenticated %}
-<div class="container h-100 d-flex justify-content-center">
-    <div class="month d-flex  flex-column justify-content-center">
-        <div class="d-flex">
-            <h4 id="Prev-Month" class="w-100 text-center"><</h4>
-            <h4 id="Month"></h4>
-            <h4 id="Next-Month" class="w-100 text-center">></h4>
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="row calendar-row">
+            <div class="d-flex">
+                <h4 id="prev_month" class="w-100 text-center"><</h4>
+                <h4 id="month" style="white-space: nowrap;" class="w-100 text-center"></h4>
+                <h4 id="next_month" class="w-100 text-center">></h4>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>Пн</td>
+                    <td>Вт</td>
+                    <td>Ср</td>
+                    <td>Чт</td>
+                    <td>Пт</td>
+                    <td>Сб</td>
+                    <td>Вс</td>
+                </tr>
+                </thead>
+                <tbody id="calendar">
+                </tbody>
+            </table>
         </div>
-        <table class="table days">
-            <thead>
-            <tr>
-                <th class="text-center" scope="col">Пн</th>
-                <th class="text-center" scope="col">Вт</th>
-                <th class="text-center" scope="col">Ср</th>
-                <th class="text-center" scope="col">Чт</th>
-                <th class="text-center" scope="col">Пт</th>
-                <th class="text-center" scope="col">Сб</th>
-                <th class="text-center" scope="col">Вс</th>
-            </tr>
-            </thead>
-            <tbody id='Calendar'>
-            </tbody>
-        </table>
     </div>
 </div>
+
+{% load static %}
+<script src="{% static 'aurora_core/js/jquery-3.6.0.min.js' %}"></script>
+<script>
+    let event_list_url = "{% url 'schedule_api:event_list' %}";
+</script>
+<script src="{% static 'aurora_core/js/schedule.js' %}"></script>
 
 <!-- Modal -->
 <div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
@@ -55,20 +68,6 @@
         </div>
     </div>
 </div>
-
-{% load static %}
-<script src="{% static 'aurora_core/js/jquery-3.6.0.min.js' %}"></script>
-<script>
-    let event_list_url = "{% url 'schedule_api:event_list' %}";
-
-
-
-
-
-
-
-</script>
-<script src="{% static 'aurora_core/js/schedule.js' %}"></script>
 {% else %}
 <div class="container mt-4">
     <h1 class="cover-heading">Aurora - это интерактивный календарь.</h1>
