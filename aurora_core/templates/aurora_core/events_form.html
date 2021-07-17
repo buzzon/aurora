@@ -1,17 +1,26 @@
+<div class="modal-header">
+    <h5 id="modal-title" class="modal-title"></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
 <form method="post" id="form">
     {% csrf_token %}
-    {% for field in form %}
-        <div class="form-group">
-            {{field.label_tag}}
-            <div>{{field}}</div>
-            {% if field.errors%}
-            {% for error in field.errors %}
-            <div class="alert alert-danger">
-                {{error}}
-            </div>
-            {% endfor %}
-            {% endif %}
+    <div class="modal-body">
+        <div class="input-group mb-3">
+            <input type="text" value="{{ form.cleaned_data.label }}" name="label" class="form-control" list="data" placeholder="Метка" required id="label">
+            <datalist id="data">
+                {% for label in labels %}
+                    <option data-id="{{ label.id }}" value="{{ label }}">
+                {% endfor %}
+            </datalist>
+            <input type="color" class="form-control form-control-color" id="color" value="#563d7c"
+                   title="Choose your color">
         </div>
-        {% endfor %}
-    <input type="submit" value="Submit" />
+        <div class="input-group mb-3">
+            {{ form.description }}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <input type="submit" class="btn btn-primary" value="Сохранить"/>
+    </div>
 </form>

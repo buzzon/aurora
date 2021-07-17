@@ -4,6 +4,7 @@ from django.db import models
 
 class Label(models.Model):
     title = models.CharField(max_length=255)
+    color = models.CharField(max_length=7)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

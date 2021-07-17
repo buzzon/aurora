@@ -14,19 +14,20 @@ var months=[
     'Декабрь'
 ];
 var monthsP=[
-       'января',
-       'февраля',
-       'марта',
-       'апреля',
-       'мая',
-       'июня',
-       'июля',
-       'августа',
-       'сентября',
-       'ноября',
-       'декабря',
-    ];
-var eventsMap;
+    '',
+    'января',
+    'февраля',
+    'марта',
+    'апреля',
+    'мая',
+    'июня',
+    'июля',
+    'августа',
+    'сентября',
+    'ноября',
+    'декабря',
+];
+var eventsMap, labelsMap;
 
 window.onload = function(){
     loadLabels();
@@ -78,26 +79,12 @@ function loadCalendar(date){
             day.dataset.month = date.getMonth() + 1;
             day.dataset.year = date.getFullYear();
             td.appendChild(day);
-            day.onclick = function() {
-//                modal.show();
-            }
         }
     }
 
     loadEvents(date.getMonth() + 1);
-    ss();
+    addDayEvent();
     return date;
-}
-
-function loadLabels(){
-    $.ajax({
-        url: label_list_url,
-        type: "get",
-        context: document.body,
-        success: function(data){
-            console.log(data);
-        }
-    });
 }
 
 function loadEvents(month){
@@ -123,7 +110,6 @@ function loadEvents(month){
                 var $day = $('*[data-day="'+ key + '"]');
                 $day.addClass("selected_day");
             });
-            console.log(eventsMap);
         }
     });
 }
@@ -146,40 +132,44 @@ function getPrevMonth(date){
     return next
 }
 
-
-function ss(){
+function addDayEvent(){
     $('.day').on('click', function(){
         dataset = this.children[0].dataset;
         var data;
         var date = dataset.year + "-" + dataset.month + "-" + dataset.day;
+        var date_user = dataset.day + " " + monthsP[dataset.month] + " " + dataset.year;
         if(eventsMap.has(parseInt(dataset.day))){
             events = eventsMap.get(parseInt(dataset.day));
             data = events[0];
         }
-        console.log();
 
         $.ajax({
             url: create_event_url,
             type: "get",
             data: data,
             success: function(data) {
-                $('#modal').modal('show');
-                $('#modal-content').html(data);
+                showModal(data,date_user);
 
                 $("#form").submit(function(e){
+                    var $label = $(this).find("#label")
+                    var $color = $(this).find("#color")
+                    var label_id = updateOrCreateLabel($label.val(), $color.val());
+                    $label.val(label_id);
+                    console.log($label.val());
+
                     var postUrl = $(this).attr('action');
                     var postData = $(this).serialize() + '&date=' + date;
-                    $.ajax({
-                         url: create_event_url,
-                         type: "post",
-                         data: postData,
-                         success: function(data) {
-                            console.log(data);
-                         },
-                         error: function(data){
-                            console.log(data);
-                         }
-                    });
+//                    $.ajax({
+//                         url: create_event_url,
+//                         type: "post",
+//                         data: postData,
+//                         success: function(data) {
+//                            console.log(data);
+//                         },
+//                         error: function(data){
+//                            console.log(data);
+//                         }
+//                    });
                 });
             },
             error:  function(data) {
@@ -187,4 +177,62 @@ function ss(){
             }
         });
     });
+}
+
+function showModal(data, date_user){
+    $('#modal-content').html(data);
+    $('#modal-title').html(date_user);
+    $('#modal').modal('show');
+}
+
+function loadLabels(){
+    $.ajax({
+        url: label_list_url,
+        type: "get",
+        success: function(data){
+            labelsMap = new Map();
+            data.forEach(function(label){
+                labelsMap.set(label.title, label.id);
+            });
+        }
+    });
+}
+
+function updateOrCreateLabel(val, hex) {
+    if (labelsMap.has(val))
+        return labelsMap.get(val)
+    else
+        CreateLabel(val, hex);
+}
+
+function CreateLabel(val, hex){
+    $.ajax({
+        url: label_list_url,
+        type: "post",
+        data: {title: val, color: hex},
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        success: function(data){
+            console.log(data);
+        },
+        error: function(data){
+            console.log(data);
+        }
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }

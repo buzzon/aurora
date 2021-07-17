@@ -41,6 +41,9 @@ class LabelList(generics.ListCreateAPIView):
     def get_queryset(self):
         return self.queryset.filter(owner=self.request.user)
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Label.objects.all()
