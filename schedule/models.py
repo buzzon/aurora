@@ -12,7 +12,7 @@ class Label(models.Model):
 
 class Event(models.Model):
     label = models.ForeignKey(Label, on_delete=models.CASCADE)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     date = models.DateField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 

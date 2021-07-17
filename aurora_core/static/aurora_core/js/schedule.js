@@ -1,3 +1,4 @@
+var modal;
 var months=[
     'Январь',
     'Февраль',
@@ -12,10 +13,23 @@ var months=[
     'Ноябрь',
     'Декабрь'
 ];
-
-var eventsMap, isLoad = true;
+var monthsP=[
+       'января',
+       'февраля',
+       'марта',
+       'апреля',
+       'мая',
+       'июня',
+       'июля',
+       'августа',
+       'сентября',
+       'ноября',
+       'декабря',
+    ];
+var eventsMap;
 
 window.onload = function(){
+    loadLabels();
     date = loadCalendar(new Date());
     document.getElementById('next_month').onclick = () => {
         date = getNextMonth(date);
@@ -60,25 +74,40 @@ function loadCalendar(date){
             td.classList.add("text-center");
             day = document.createElement("div");
             day.textContent = days[7*w+d];
-            day.dataset.index = days[7*w+d];
+            day.dataset.day = days[7*w+d];
+            day.dataset.month = date.getMonth() + 1;
+            day.dataset.year = date.getFullYear();
             td.appendChild(day);
+            day.onclick = function() {
+//                modal.show();
+            }
         }
     }
 
     loadEvents(date.getMonth() + 1);
-
+    ss();
     return date;
 }
 
+function loadLabels(){
+    $.ajax({
+        url: label_list_url,
+        type: "get",
+        context: document.body,
+        success: function(data){
+            console.log(data);
+        }
+    });
+}
+
 function loadEvents(month){
-    isLoad = true;
     $.ajax({
         url: event_list_url,
         type: "get",
         context: document.body,
         data: {month:  month},
         success: function(data){
-            var eventsMap = new Map();
+            eventsMap = new Map();
             data.forEach(function(element){
                 var date = new Date(element.date).getDate();
                 if (eventsMap.has(date)){
@@ -91,7 +120,7 @@ function loadEvents(month){
             });
 
             eventsMap.forEach(function(element, key){
-                var $day = $('*[data-index="'+ key + '"]');
+                var $day = $('*[data-day="'+ key + '"]');
                 $day.addClass("selected_day");
             });
             console.log(eventsMap);
@@ -117,77 +146,45 @@ function getPrevMonth(date){
     return next
 }
 
-//var year, month,
-//    modal = new bootstrap.Modal(document.getElementById('Modal'));
 
-//    var monthsP=[
-//       'января',
-//       'февраля',
-//       'марта',
-//       'апреля',
-//       'мая',
-//       'июня',
-//       'июля',
-//       'августа',
-//       'сентября',
-//       'ноября',
-//       'декабря',
-//    ];
+function ss(){
+    $('.day').on('click', function(){
+        dataset = this.children[0].dataset;
+        var data;
+        var date = dataset.year + "-" + dataset.month + "-" + dataset.day;
+        if(eventsMap.has(parseInt(dataset.day))){
+            events = eventsMap.get(parseInt(dataset.day));
+            data = events[0];
+        }
+        console.log();
 
-//    $('#Month').text(months[m]);
+        $.ajax({
+            url: create_event_url,
+            type: "get",
+            data: data,
+            success: function(data) {
+                $('#modal').modal('show');
+                $('#modal-content').html(data);
 
-//    var days = document.getElementsByClassName('day');
-//    for (let i = 0; i < days.length; i++) {
-//        days[i].onclick = function() {
-//            modal.show();
-//            $('#ModalLabel').text(i + 1 + " " + monthsP[m] + " " + y);
-//            var $day = $('*[data-index="'+ (i + 1) + '"]');
-//            $description = $('#Modal').find('#id_description');
-//            $description.html('');
-//            $description.html($day.data().description);
-//        }
-//    }
-//
-//    loadData(m + 1);
-//}
-//
-////function loadEventForm(){
-////    $.ajax({
-////        url: event_create_form_url,
-////        type: "get",
-////        success: function(data){
-////            $('#Modal').find('.modal-body').html(data);
-////            $('#modalForm').attr('action', event_create_form_url);
-////        }
-////    });
-////}
-//
-//
-
-//}
-//
-//function addfirstweek(calendar, firstDay) {
-//    week = document.createElement("tr");
-//    calendar.appendChild(week);
-//
-//    if (firstDay == 0) firstDay = 7;
-//
-//    for (let i = 0; i < firstDay - 1 ; i++) {
-//        week.appendChild(document.createElement("td"));
-//    }
-//
-//    for (var index = 1; index <= 8 - firstDay; index++) {
-//        td = document.createElement("td");
-//        td.classList.add("text-center");
-//        day = document.createElement("day");
-//        day.textContent = index;
-//        day.dataset.index = index;
-//        day.classList.add("day");
-//        td.appendChild(day);
-//        week.appendChild(td);
-//    }
-//
-//    return index;
-//}
-//
-
+                $("#form").submit(function(e){
+                    var postUrl = $(this).attr('action');
+                    var postData = $(this).serialize() + '&date=' + date;
+                    $.ajax({
+                         url: create_event_url,
+                         type: "post",
+                         data: postData,
+                         success: function(data) {
+                            console.log(data);
+                         },
+                         error: function(data){
+                            console.log(data);
+                         }
+                    });
+                });
+            },
+            error:  function(data) {
+                console.log(data);
+            }
+        });
+    });
+}

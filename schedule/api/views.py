@@ -30,14 +30,23 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
+    def get_queryset(self):
+        return self.queryset.filter(owner=self.request.user)
+
 
 class LabelList(generics.ListCreateAPIView):
     queryset = Label.objects.all()
     serializer_class = LabelSerializer
 
+    def get_queryset(self):
+        return self.queryset.filter(owner=self.request.user)
+
 
 class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Label.objects.all()
     serializer_class = LabelSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(owner=self.request.user)
 
 
