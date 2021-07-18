@@ -7,7 +7,6 @@ html,body {
 }
 
 .selected_day{
-  background: linear-gradient(orange, red);
   justify-content: center;
   align-items: center;
   border-radius: 100%;

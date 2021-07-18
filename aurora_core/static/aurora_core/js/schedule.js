@@ -27,7 +27,7 @@ var monthsP=[
     'ноября',
     'декабря',
 ];
-var eventsMap, labelsMap;
+var eventsMap, labelsMap, labelsMap_id;
 
 window.onload = function(){
     loadLabels();
@@ -108,7 +108,10 @@ function loadEvents(month){
 
             eventsMap.forEach(function(element, key){
                 var $day = $('*[data-day="'+ key + '"]');
+                var label = element[0].label;
+                console.log();
                 $day.addClass("selected_day");
+                $day.css("background-color", labelsMap_id.get(label).color);
             });
         }
     });
@@ -147,29 +150,40 @@ function addDayEvent(){
             url: create_event_url,
             type: "get",
             data: data,
-            success: function(data) {
-                showModal(data,date_user);
+            success: function(data_form) {
+                showModal(data_form, date_user);
+                label = $('#label').val();
+                if (labelsMap.has(label))
+                    $('#color').val(labelsMap.get(label).color);
 
-                $("#form").submit(function(e){
+                $(document).on('change', '#label', function() {
+                    label = $(this).val();
+                    if (labelsMap.has(label))
+                        $('#color').val(labelsMap.get(label).color);
+                });
+
+                $("#form").submit(async function(e){
                     var $label = $(this).find("#label")
                     var $color = $(this).find("#color")
-                    var label_id = updateOrCreateLabel($label.val(), $color.val());
+                    var label_id = await updateOrCreateLabel($label.val(), $color.val());
                     $label.val(label_id);
                     console.log($label.val());
 
                     var postUrl = $(this).attr('action');
-                    var postData = $(this).serialize() + '&date=' + date;
-//                    $.ajax({
-//                         url: create_event_url,
-//                         type: "post",
-//                         data: postData,
-//                         success: function(data) {
-//                            console.log(data);
-//                         },
-//                         error: function(data){
-//                            console.log(data);
-//                         }
-//                    });
+                    var postData = $(this).serialize() + '&date=' + date ;
+                    if (data != undefined)
+                        postData = postData + '&id=' + data.id;
+                    $.ajax({
+                         url: create_event_url,
+                         type: "post",
+                         data: postData,
+                         success: function(data) {
+                            console.log(data);
+                         },
+                         error: function(data){
+                            console.log(data);
+                         }
+                    });
                 });
             },
             error:  function(data) {
@@ -191,22 +205,37 @@ function loadLabels(){
         type: "get",
         success: function(data){
             labelsMap = new Map();
+            labelsMap_id = new Map();
             data.forEach(function(label){
-                labelsMap.set(label.title, label.id);
+                labelsMap.set(label.title, label);
+                labelsMap_id.set(label.id, label);
             });
         }
     });
 }
 
-function updateOrCreateLabel(val, hex) {
-    if (labelsMap.has(val))
-        return labelsMap.get(val)
-    else
-        CreateLabel(val, hex);
+async function updateOrCreateLabel(val, hex) {
+    if (labelsMap.has(val)) {
+        var label = labelsMap.get(val);
+        return label.id
+    }
+    else {
+        var data = await CreateLabel(val, hex);
+        return data.id;
+    }
+
 }
 
+//function sleep(milliseconds) {
+//  const date = Date.now();
+//  let currentDate = null;
+//  do {
+//    currentDate = Date.now();
+//  } while (currentDate - date < milliseconds);
+//}
+
 function CreateLabel(val, hex){
-    $.ajax({
+    return $.ajax({
         url: label_list_url,
         type: "post",
         data: {title: val, color: hex},

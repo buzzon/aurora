@@ -1,7 +1,7 @@
 from django.forms import HiddenInput
 from django.shortcuts import render, redirect
 from aurora_core.forms import EventForm
-from schedule.models import Label
+from schedule.models import Label, Event
 
 
 def index(request):
@@ -13,9 +13,16 @@ def event_create(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
         if form.is_valid():
-            event = form.save(commit=False)
-            event.owner = request.user
-            event.save()
+            qwe = form.data.get('id', None)
+            if qwe is None:
+                event = form.save(commit=False)
+                event.owner = request.user
+                event.save()
+            else:
+                event = Event.objects.get(id=qwe)
+                event.description = form.cleaned_data.get('description', event.description)
+                event.label = form.cleaned_data.get('label', event.label)
+                event.save()
             return redirect('aurora_core:index')
     else:
         form = EventForm(request.GET)
