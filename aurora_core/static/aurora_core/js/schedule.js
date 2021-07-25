@@ -29,8 +29,8 @@ var monthsP=[
 ];
 var eventsMap, labelsMap, labelsMap_id;
 
-window.onload = function(){
-    loadLabels();
+window.onload = async function(){
+    await loadLabels();
     date = loadCalendar(new Date());
     document.getElementById('next_month').onclick = () => {
         date = getNextMonth(date);
@@ -88,7 +88,7 @@ function loadCalendar(date){
 }
 
 function loadEvents(month){
-    $.ajax({
+    return $.ajax({
         url: event_list_url,
         type: "get",
         context: document.body,
