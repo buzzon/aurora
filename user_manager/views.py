@@ -1,7 +1,7 @@
 from django.contrib.auth import login, logout, authenticate
 from django.forms.utils import ErrorList
 from django.shortcuts import redirect, render
-
+from rest_framework.authtoken.models import Token
 from user_manager.forms import SignUpForm, SignInForm
 
 
@@ -12,6 +12,7 @@ def sign_up(request):
             new_user = form.save(commit=False)
             new_user.set_password(form.cleaned_data.get('password'))
             new_user.save()
+            Token.objects.create(user=new_user)
             login(request, new_user)
             return redirect('aurora_core:index')
     else:

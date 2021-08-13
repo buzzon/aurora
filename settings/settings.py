@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_filters',
 ]
 
@@ -82,14 +83,21 @@ WSGI_APPLICATION = 'aurora.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': params.get('db', 'name'),
+#         'USER': params.get('db', 'user'),
+#         'PASSWORD': params.get('db', 'password'),
+#         'HOST': params.get('db', 'host'),
+#         'PORT': params.get('db', 'port'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': params.get('db', 'name'),
-        'USER': params.get('db', 'user'),
-        'PASSWORD': params.get('db', 'password'),
-        'HOST': params.get('db', 'host'),
-        'PORT': params.get('db', 'port'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
     }
 }
 
@@ -116,6 +124,9 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
 
