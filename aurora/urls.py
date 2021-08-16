@@ -20,5 +20,6 @@ urlpatterns = [
     path('', include('aurora_core.urls')),
     path('schedule/api/', include('schedule.api.urls')),
     path('accounts/', include('user_manager.urls')),
+    path('accounts/api/', include('user_manager.api.urls')),
     path('admin/', admin.site.urls),
 ]
