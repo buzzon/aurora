@@ -15,6 +15,7 @@ class Event(models.Model):
     label = models.ForeignKey(Label, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     date = models.DateField()
+    time = models.TimeField(auto_now=False, auto_now_add=False, blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
